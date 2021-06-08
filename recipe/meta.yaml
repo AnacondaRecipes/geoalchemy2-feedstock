@@ -23,15 +23,20 @@ requirements:
     - python
     - pip
     - setuptools_scm
+    - wheel
 
   run:
     - python
     - setuptools
-    - sqlalchemy >=0.8
+    - sqlalchemy >=1.1
 
 test:
   imports:
     - geoalchemy2
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: http://geoalchemy.org/
