@@ -1,8 +1,8 @@
 {% set name = "GeoAlchemy2" %}
-{% set version = "0.9.0" %}
+{% set version = "0.9.1" %}
 {% set bundle = "tar.gz" %}
 {% set hash_type = "sha256" %}
-{% set hash_val = "c32023bc2fb8fbb136f00a0e9c2feba21f3e1040af0f619c888661f6ee72dd28" %}
+{% set hash_val = "de0d0b1ff2f7f26ddff0a69d9a33940020707caedd442fa13b28affec842dafb" %}
 
 package:
   name: {{ name|lower }}
