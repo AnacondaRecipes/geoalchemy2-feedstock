@@ -1,35 +1,38 @@
 {% set name = "GeoAlchemy2" %}
-{% set version = "0.9.2" %}
+{% set version = "0.18.0" %}
 {% set bundle = "tar.gz" %}
-{% set hash_type = "sha256" %}
-{% set hash_val = "f71db14bd7e79c2babb24f4316f004a617e48b78e84b203d14b7fde484d162d0" %}
+{% set hash_val = "9a04690cc33fbc580d15c7c028d9b1b1ea08271489730096c7092e1d486c2b7a" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
-  {{ hash_type }}: {{ hash_val }}
+  url: https://pypi.org/packages/source/G/GeoAlchemy2/geoalchemy2-0.18.0.tar.gz
+  sha256: {{ hash_val }}
 
 build:
-  preserve_egg_dir: True
+  preserve_egg_dir: true
   number: 0
   noarch: python
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  skip: true  # [py<310]
 
 requirements:
   host:
     - python
     - pip
-    - setuptools >42
+    - setuptools >=42
     - setuptools_scm
     - wheel
-
+    - setuptools-scm >=3.4
   run:
     - python
     - setuptools
-    - sqlalchemy >=1.1
+    - sqlalchemy >=1.4
+    - packaging
+  run_constrained:
+    - Shapely >=1.7
 
 test:
   imports:
@@ -44,10 +47,10 @@ about:
   license: MIT
   license_family: MIT
   license_file: COPYING.rst
-  summary: 'Using SQLAlchemy with Spatial Databases'
+  summary: Using SQLAlchemy with Spatial Databases
   doc_url: https://geoalchemy-2.readthedocs.io/en/latest/
   dev_url: https://github.com/geoalchemy/geoalchemy2
-  
+
 extra:
   recipe-maintainers:
     - pmlandwehr
