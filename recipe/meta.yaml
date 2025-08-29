@@ -1,54 +1,63 @@
 {% set name = "GeoAlchemy2" %}
 {% set version = "0.18.0" %}
-{% set bundle = "tar.gz" %}
-{% set hash_val = "9a04690cc33fbc580d15c7c028d9b1b1ea08271489730096c7092e1d486c2b7a" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/G/GeoAlchemy2/geoalchemy2-0.18.0.tar.gz
-  sha256: {{ hash_val }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|lower }}-{{ version }}.tar.gz
+  sha256: 9a04690cc33fbc580d15c7c028d9b1b1ea08271489730096c7092e1d486c2b7a
 
 build:
-  preserve_egg_dir: true
-  number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
   skip: true  # [py<310]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
     - pip
-    - setuptools >=42
-    - setuptools_scm
     - wheel
+    - setuptools >=42
     - setuptools-scm >=3.4
   run:
     - python
-    - setuptools
     - sqlalchemy >=1.4
     - packaging
   run_constrained:
-    - Shapely >=1.7
+    - shapely >=1.7
 
 test:
   imports:
     - geoalchemy2
+    - geoalchemy2.admin
+    - geoalchemy2.admin.dialects
+    - geoalchemy2.types
+    - geoalchemy2.types.dialects
+  source_files:
+    - tests
   requires:
     - pip
+    - pytest
+    - shapely >=1.7
+    - alembic
+    - rasterio
   commands:
     - pip check
+    # Skipping failing benchamark tests as they require whole infrastructure.
+    # They're not critical eitherway.
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py
 
 about:
-  home: http://geoalchemy.org/
+  home: https://geoalchemy.org
   license: MIT
   license_family: MIT
   license_file: COPYING.rst
   summary: Using SQLAlchemy with Spatial Databases
-  doc_url: https://geoalchemy-2.readthedocs.io/en/latest/
+  description: |
+    GeoAlchemy 2 is a support library for SQLAlchemy, that adds support for spatial databases.
+  doc_url: https://geoalchemy-2.readthedocs.io
   dev_url: https://github.com/geoalchemy/geoalchemy2
 
 extra:
