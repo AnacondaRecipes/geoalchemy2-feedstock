@@ -1,5 +1,5 @@
 {% set name = "GeoAlchemy2" %}
-{% set version = "0.18.0" %}
+{% set version = "0.20.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|lower }}-{{ version }}.tar.gz
-  sha256: 9a04690cc33fbc580d15c7c028d9b1b1ea08271489730096c7092e1d486c2b7a
+  sha256: 450f427f4bc3cf2d5ddee0af3763aed0f3eea2384e7c9a99798d8f1508279322
 
 build:
   skip: true  # [py<310]
@@ -18,15 +18,14 @@ requirements:
   host:
     - python
     - pip
-    - wheel
-    - setuptools >=42
-    - setuptools-scm >=3.4
+    - setuptools >=61
+    - setuptools-scm >=6.2
   run:
     - python
     - sqlalchemy >=1.4
     - packaging
   run_constrained:
-    - shapely >=1.7
+    - Shapely >=1.7
 
 test:
   imports:
@@ -47,7 +46,7 @@ test:
     - pip check
     # Skipping failing benchamark tests as they require whole infrastructure.
     # They're not critical eitherway.
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py # [unix]
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py  # [unix]
     # For Windows, skip as well a failing test because of a problem
     # with decoding sign UTF-8 0xC3 0xA9 (é)
     - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date"  # [win]
