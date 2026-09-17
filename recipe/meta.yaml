@@ -25,7 +25,7 @@ requirements:
     - sqlalchemy >=1.4
     - packaging
   run_constrained:
-    - Shapely >=1.7
+    - shapely >=1.7
 
 test:
   imports:
@@ -46,10 +46,11 @@ test:
     - pip check
     # Skipping failing benchamark tests as they require whole infrastructure.
     # They're not critical eitherway.
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py  # [unix]
+    # 0.20.0 parametrizes mysql/mariadb; those need MySQLdb and a live server.
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not mysql and not mariadb"  # [unix]
     # For Windows, skip as well a failing test because of a problem
     # with decoding sign UTF-8 0xC3 0xA9 (é)
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date"  # [win]
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date and not mysql and not mariadb"  # [win]
 
 about:
   home: https://geoalchemy.org
