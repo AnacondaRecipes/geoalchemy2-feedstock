@@ -1,8 +1,8 @@
-{% set name = "GeoAlchemy2" %}
+{% set name = "geoalchemy2" %}
 {% set version = "0.20.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -11,7 +11,7 @@ source:
 
 build:
   skip: true  # [py<310]
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
@@ -41,7 +41,7 @@ test:
     - pytest
     - shapely >=1.7
     - alembic
-    - rasterio
+    - rasterio     # [not (win and arm64)]
   commands:
     - pip check
     # Skipping failing benchamark tests as they require whole infrastructure.
@@ -50,10 +50,12 @@ test:
     - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not mysql and not mariadb"  # [unix]
     # For Windows, skip as well a failing test because of a problem
     # with decoding sign UTF-8 0xC3 0xA9 (é)
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date and not mysql and not mariadb"  # [win]
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date and not mysql and not mariadb"  # [win and not arm64]
+    # Ignoring the test requiring rasterio for win-arm64 as it is missing in the main channel
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/gallery/test_insert_raster.py -k "not test_stubs_up_to_date and not mysql and not mariadb" # [win and arm64]
 
 about:
-  home: https://geoalchemy.org
+  home: https://github.com/geoalchemy/geoalchemy2
   license: MIT
   license_family: MIT
   license_file: COPYING.rst
