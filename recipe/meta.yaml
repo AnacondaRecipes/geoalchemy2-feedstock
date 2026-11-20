@@ -48,12 +48,16 @@ test:
     # Skipping failing benchamark tests as they require whole infrastructure.
     # They're not critical eitherway.
     # 0.20.0 parametrizes mysql/mariadb; those need MySQLdb and a live server.
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not mysql and not mariadb"  # [unix]
+    # 0.21.0 adds tests/test_compare_benchmarks.py, a unit test for the dev-only
+    # tools/compare_benchmarks.py script; tools/ is not part of the installed
+    # package or source_files, so the import fails. Ignore it like the other
+    # benchmark-infrastructure tests.
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not mysql and not mariadb"  # [unix]
     # For Windows, skip as well a failing test because of a problem
     # with decoding sign UTF-8 0xC3 0xA9 (é)
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py -k "not test_stubs_up_to_date and not mysql and not mariadb"  # [win and not arm64]
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not test_stubs_up_to_date and not mysql and not mariadb"  # [win and not arm64]
     # Ignoring the test requiring rasterio for win-arm64 as it is missing in the main channel
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/gallery/test_insert_raster.py -k "not test_stubs_up_to_date and not mysql and not mariadb" # [win and arm64]
+    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py --ignore=tests/gallery/test_insert_raster.py -k "not test_stubs_up_to_date and not mysql and not mariadb" # [win and arm64]
 
 about:
   home: https://github.com/geoalchemy/geoalchemy2
