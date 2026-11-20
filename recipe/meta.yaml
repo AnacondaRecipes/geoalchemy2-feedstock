@@ -48,22 +48,14 @@ test:
     # Skipping failing benchamark tests as they require whole infrastructure.
     # They're not critical eitherway.
     # 0.20.0 parametrizes mysql/mariadb; those need MySQLdb and a live server.
-    # 0.21.0 adds tests/test_compare_benchmarks.py, a unit test for the dev-only
-    # tools/compare_benchmarks.py script; tools/ is not part of the installed
-    # package or source_files, so the import fails. Ignore it like the other
-    # benchmark-infrastructure tests.
-    # 0.21.0 routes WKB->WKT conversion in the MSSQL dialect through the optional
-    # wkb-wkt-converter, falling back to Shapely when it is absent; Shapely has
-    # no M-dimension support, so the two tests asserting ZM dimensions survive
-    # the MSSQL bind processor fail without that converter (not in the main
-    # channel). Deselect them; this is an upstream optional-dependency gap, not
-    # a recipe defect.
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs"  # [unix]
+    # test_compare_benchmarks.py needs tools/, not shipped in source_files.
+    # ZM-dimension MSSQL tests need the optional wkb-wkt-converter (not in main).
+    - pytest -vv tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs"  # [unix]
     # For Windows, skip as well a failing test because of a problem
     # with decoding sign UTF-8 0xC3 0xA9 (é)
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not test_stubs_up_to_date and not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs"  # [win and not arm64]
+    - pytest -vv tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py -k "not test_stubs_up_to_date and not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs"  # [win and not arm64]
     # Ignoring the test requiring rasterio for win-arm64 as it is missing in the main channel
-    - pytest -v tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py --ignore=tests/gallery/test_insert_raster.py -k "not test_stubs_up_to_date and not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs" # [win and arm64]
+    - pytest -vv tests --ignore=tests/benchmarks/test_insert_select.py --ignore=tests/test_compare_benchmarks.py --ignore=tests/gallery/test_insert_raster.py -k "not test_stubs_up_to_date and not mysql and not mariadb and not test_bind_processor_preserves_zm_dimension_for_iso_wkb_inputs and not test_bind_processor_preserves_zm_dimension_for_nested_iso_wkb_inputs" # [win and arm64]
 
 about:
   home: https://github.com/geoalchemy/geoalchemy2
